@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 18:42:18 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/23 18:40:56 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/01/27 16:03:48 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,20 @@
 
 # include <pthread.h>
 # include <stdio.h>
+# include <stdlib.h>
 
 typedef struct s_philo
 {
 	pthread_t	thread;
-	int			have_eat;
+	int			id;
+	int			state;
+	int			l_fork_id;
+	int			r_fork_id;
+	int			times_eat;
+	time_t		death_timer;
 }				t_philo;
 
-typedef	struct s_rule
+typedef	struct s_main
 {
 	t_philo			*philo;
 	int				ph_count;
@@ -33,15 +39,17 @@ typedef	struct s_rule
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	eatin_lock;
 	pthread_mutex_t	write_lock;
-}					t_rule;
+}					t_main;
 
 // init
-int	*init_all(int argc, char **argv);
+t_main	*init_all(int argc, char **argv);
 
 // check command line arguments
 void	check_arguments(int argc, char **argv);
 
 // utils
-int		ft_atoi(const char *str);
+long	ft_atoi(const char *str);
+void	error(int condition);
+time_t	get_time(void);
 
 #endif

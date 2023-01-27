@@ -1,41 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_arg.c                                        :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/20 19:19:47 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/25 20:40:02 by chenlee          ###   ########.fr       */
+/*   Created: 2023/01/25 20:31:47 by chenlee           #+#    #+#             */
+/*   Updated: 2023/01/27 16:02:17 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check_isnum(char *line)
+void	error(int condition)
 {
-	int	i;
-
-	i = -1;
-	while (line[++i] != 0)
+	if (condition == 1)
 	{
-		if (line[i] > 57 || line[i] < 48)
-			error(2);
+		printf("Usage: ./philo <num_of_philo> <time_to_die> <time_to_eat>"
+			" <time_to_sleep> <(optional)num_of_times_each_philo_must_eat>\n");
 	}
-}
-
-void	check_arguments(int argc, char **argv)
-{
-	int	i;
-
-	i = 0;
-	if (argc != 5 && argc != 6)
-		error(1);
-	else
-	{
-		while (++i < argc)
-			check_isnum(argv[i]);
-		if (ft_atoi(argv[1]) > 200)
-			error(3);
-	}
+	else if (condition == 2)
+		printf("Error: Parameters must contain only numbers!\n");
+	else if (condition == 3)
+		printf("Error: Too many Philosophers!\n");
+	else if (condition == 4)
+		printf("Error: Mutex init failed!\n");
+	exit(1);
 }

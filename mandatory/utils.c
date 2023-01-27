@@ -1,16 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/20 19:20:16 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/20 19:37:58 by chenlee          ###   ########.fr       */
+/*   Created: 2023/01/26 18:06:27 by chenlee           #+#    #+#             */
+/*   Updated: 2023/01/26 18:25:57 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+time_t	get_time(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
 
 int	ft_isdigit(int c)
 {
@@ -19,11 +27,11 @@ int	ft_isdigit(int c)
 	return (0);
 }
 
-int	ft_atoi(const char *str)
+long	ft_atoi(const char *str)
 {
-	int	i;
-	int	nbr;
-	int	sign;
+	int		i;
+	long	nbr;
+	int		sign;
 
 	i = 0;
 	nbr = 0;
