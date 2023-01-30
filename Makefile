@@ -4,18 +4,13 @@ M_OBJS_DIR	=	mandatory/objects/
 M_OBJS		=	$(addprefix $(M_OBJS_DIR), $(notdir $(M_SRC:.c=.o)))
 M_SRC		=	mando.c		\
 				check_arg.c	\
-				error.c		\
-				ft_atoi.c	\
-				init.c
+				init.c		\
+				execution.c	\
+				extras.c
 
 B_OBJS_DIR	=	bonus/objects/
 B_OBJS		=	$(addprefix $(B_OBJS_DIR), $(B_SRC:.c=.o))
 B_SRC		=	
-
-OBJS_DIR	=	mandatory	\
-				bonus
-
-vpath %.c $(OBJS_DIR)
 
 FLAGS		=	-Wall -Wextra -Werror
 

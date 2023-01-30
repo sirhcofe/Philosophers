@@ -1,5 +1,7 @@
 {
 	"files.associations": {
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"philo.h": "c",
+		"system_error": "c"
 	}
 }

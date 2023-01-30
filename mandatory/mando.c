@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 18:41:36 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/27 20:10:56 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/01/30 17:41:51 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 int	main(int argc, char **argv)
 {
-	t_main	*rule;
+	t_main		*global;
+	pthread_t	*thread;
 
 	check_arguments(argc, argv);
-	rule = init_all(argc, argv);
-	execute(rule);
+	global = init_all(argc, argv);
+	thread = execute(global, &philo_cycle);
 }

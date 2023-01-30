@@ -6,53 +6,53 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 15:31:07 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/27 16:04:01 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/01/30 17:43:13 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	mutex_init(t_main *rule)
+void	mutex_init(t_main *global)
 {
 	int	i;
 
 	i = -1;
-	while (++i < rule->ph_count)
+	while (++i < global->ph_count)
 	{
-		pthread_mutex_init(&(rule->forks[i]), NULL)
+		pthread_mutex_init(&(global->forks[i]), NULL);
 	}
 }
 
-void	philo_init(t_main *rule)
+void	philo_init(t_main *global)
 {
 	int		i;
-	rule->philo = malloc(sizeof(t_philo) * rule->ph_count);
+	global->philo = malloc(sizeof(t_philo) * global->ph_count);
 	i = -1;
-	while (++i < rule->ph_count)
+	while (++i < global->ph_count)
 	{
-		rule->philo[i].id = i;
-		rule->philo[i].id = 0;
-		rule->philo[i].l_fork_id = i;
-		rule->philo[i].r_fork_id = (i + 1) % rule->ph_count;
-		rule->philo[i].times_eat = 0;
-		rule->philo[i].death_timer = rule->t_die;
+		global->philo[i].id = i;
+		global->philo[i].id = 0;
+		global->philo[i].l_fork_id = i;
+		global->philo[i].r_fork_id = (i + 1) % global->ph_count;
+		global->philo[i].meal_count = 0;
+		global->philo[i].death_timer = global->t_die;
 	}
 }
 
 t_main	*init_all(int argc, char **argv)
 {
-	t_main	*rule;
+	t_main	*global;
 
-	rule = malloc(sizeof(t_main));
-	rule->ph_count = (int)ft_atoi(argv[1]);
-	rule->t_die = (int)ft_atoi(argv[2]);
-	rule->t_eat = (int)ft_atoi(argv[3]);
-	rule->t_sleep = (int)ft_atoi(argv[4]);
+	global = malloc(sizeof(t_main));
+	global->ph_count = (int)ft_atoi(argv[1]);
+	global->t_die = (int)ft_atoi(argv[2]);
+	global->t_eat = (int)ft_atoi(argv[3]);
+	global->t_sleep = (int)ft_atoi(argv[4]);
 	if (argc == 6)
-		rule->must_eat = (int)ft_atoi(argv[5]);
+		global->must_eat = (int)ft_atoi(argv[5]);
 	else
-		rule->must_eat = -1;
-	philo_init(rule);
-	mutex_init(rule);
-	return (rule);
+		global->must_eat = -1;
+	philo_init(global);
+	mutex_init(global);
+	return (global);
 }

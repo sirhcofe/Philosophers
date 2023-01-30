@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 18:42:18 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/27 16:03:48 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/01/30 19:06:09 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,31 @@
 # include <pthread.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <fcntl.h>
+
+# define C_RED  "\x1B[31m"
+# define C_GRN  "\x1B[32m"
+# define C_BLU  "\x1B[34m"
+# define C_CYN  "\x1B[36m"
+
+# define THINK 1
+# define FORK 2
+# define EAT 3
+# define SLEEP 4
+# define DIED 5
 
 typedef struct s_philo
 {
-	pthread_t	thread;
 	int			id;
 	int			state;
 	int			l_fork_id;
 	int			r_fork_id;
-	int			times_eat;
+	int			meal_count;
+	time_t		meal_history;
 	time_t		death_timer;
 }				t_philo;
 
-typedef	struct s_main
+typedef struct s_main
 {
 	t_philo			*philo;
 	int				ph_count;
@@ -42,14 +54,16 @@ typedef	struct s_main
 }					t_main;
 
 // init
-t_main	*init_all(int argc, char **argv);
+t_main		*init_all(int argc, char **argv);
 
 // check command line arguments
-void	check_arguments(int argc, char **argv);
+void		check_arguments(int argc, char **argv);
+
+// execution
+pthread_t	*execute(t_main *global, void *(fn)(void *));
 
 // utils
-long	ft_atoi(const char *str);
-void	error(int condition);
-time_t	get_time(void);
+long		ft_atoi(const char *str);
+time_t		get_time(void);
 
 #endif
