@@ -6,11 +6,28 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 20:10:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/07 14:50:57 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/07 19:19:47 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+/**
+ * lol I'm lazy, called when only 1 philo is present, where it's impossible
+ * for the philo to eat, and dies
+ * 
+ * @param argv command line arguments
+*/
+void	hard_code(char **argv)
+{
+	int	t_die;
+
+	t_die = (int)(ft_atoi(argv[2]));
+	printf(C_GRN "%-8d %d is thinking\n", 0, 0);
+	printf(C_CYN "%-8d %d has taken a fork\n", 0, 0);
+	m_wait(t_die);
+	printf(C_RED "%-8d %d has died!\n", t_die, 0);
+}
 
 int	check_is_dead(t_philo *philo)
 {
@@ -33,7 +50,7 @@ void	*death_timer(void *argument)
 	philo = (t_philo *)(argument);
 	while (1)
 	{
-		if (check_is_dead(philo))
+		if (print_message(0, philo) || check_is_dead(philo))
 		{
 			print_message(DIED, philo);
 			break ;
@@ -44,7 +61,7 @@ void	*death_timer(void *argument)
 
 void	*philo_cycle(void *argument)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)(argument);
 	while (1)
@@ -68,26 +85,5 @@ pthread_t	*execute(t_philo *philo, void *(fn)(void *))
 	i = -1;
 	while (++i < philo[0].ph_count)
 		pthread_create(&(thread[i]), NULL, fn, (void *)(&(philo[i])));
-	return(thread);
-}
-
-/**
- * Function to terminate threads
- * 
- * @param cycle the main threads responsible for monitoring eat/sleep/think
- * @param death the death threads responsible for monitoring philos death
- * @param ph_count total number of philosophers
-*/
-void	join_thread(pthread_t *cycle, pthread_t *death, int ph_count)
-{
-	int	i;
-
-	i = -1;
-	while (++i < ph_count)
-	{
-		pthread_join(cycle[i], NULL);
-		pthread_join(death[i], NULL);
-	}
-	free(cycle);
-	free(death);
+	return (thread);
 }

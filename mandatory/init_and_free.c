@@ -6,11 +6,32 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/22 15:31:07 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/07 15:01:59 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/07 18:44:06 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+/**
+ * Function to terminate threads
+ * 
+ * @param cycle the main threads responsible for monitoring eat/sleep/think
+ * @param death the death threads responsible for monitoring philos death
+ * @param ph_count total number of philosophers
+*/
+void	join_thread(pthread_t *cycle, pthread_t *death, int ph_count)
+{
+	int	i;
+
+	i = -1;
+	while (++i < ph_count)
+	{
+		pthread_join(cycle[i], NULL);
+		pthread_join(death[i], NULL);
+	}
+	free(cycle);
+	free(death);
+}
 
 void	ft_free(t_philo *philo, t_global *rules)
 {
@@ -20,7 +41,10 @@ void	ft_free(t_philo *philo, t_global *rules)
 	count = philo[0].ph_count;
 	i = -1;
 	while (++i < count)
+	{
 		pthread_mutex_destroy(&(rules->forks[i]));
+		pthread_mutex_destroy(&(philo[i].cycle_protect));
+	}
 	pthread_mutex_destroy(&(rules->write_lock));
 	pthread_mutex_destroy(&(rules->meal_lock));
 	free(rules->forks);
@@ -74,6 +98,9 @@ t_global	*global_init(char **argv)
 	t_global	*rules;
 
 	rules = malloc(sizeof(t_global));
+	rules->died = 0;
+	rules->ph_fed = 0;
+	rules->fed_print = 0;
 	mutex_init(rules, (int)ft_atoi(argv[1]));
 	return (rules);
 }

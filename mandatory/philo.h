@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 18:42:18 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/07 15:01:38 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/07 19:17:22 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define C_BLU  "\x1B[34m"
 # define C_CYN  "\x1B[36m"
 # define C_PUR	"\033[35m"
+# define C_WHT	"\033[37m"
 
 # define THINK 1
 # define FORK 2
@@ -37,6 +38,7 @@ typedef struct s_global
 {
 	int				died;
 	int				ph_fed;
+	int				fed_print;
 	pthread_mutex_t	meal_lock;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	write_lock;
@@ -70,7 +72,8 @@ pthread_t	*execute(t_philo *philo, void *(fn)(void *));
 void		*philo_cycle(void *argument);
 void		*death_timer(void *argument);
 void		join_thread(pthread_t *cycle, pthread_t *death, int ph_count);
-void		wait(time_t target);
+void		m_wait(time_t target);
+void		hard_code(char **argv);
 
 // philo_cycle
 int			thinking(t_philo *philo);
@@ -79,8 +82,9 @@ int			eating(t_philo *philo);
 
 // utils
 long		ft_atoi(const char *str);
+void		ft_free(t_philo *philo, t_global *rules);
 time_t		get_time(void);
 int			print_message(int status, t_philo *philo);
-void		ft_free(t_philo *philo, t_global *rules);
+int			check_anyone_dead(int status, t_philo *philo);
 
 #endif

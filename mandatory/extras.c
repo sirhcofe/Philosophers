@@ -6,11 +6,43 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 18:06:27 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/07 14:50:13 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/07 19:23:34 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	unlock_thread(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_unlock(&(philo->rules->forks[philo->id]));
+		pthread_mutex_unlock(&(philo->rules->forks[(philo->id + 1)
+				% philo->ph_count]));
+	}
+	else
+	{
+		pthread_mutex_unlock(&(philo->rules->forks[philo->id - 1]));
+		pthread_mutex_unlock(&(philo->rules->forks[philo->id]));
+	}
+	pthread_mutex_unlock(&(philo->rules->write_lock));
+}
+
+int	check_everyone_full(int status, t_philo *philo)
+{
+	int	ret;
+
+	if (status == FULL && philo->rules->fed_print != 1)
+	{
+		philo->rules->fed_print = 1;
+		ret = 0;
+	}
+	else if (philo->rules->fed_print == 1)
+		ret = 1;
+	else
+		ret = 0;
+	return (ret);
+}
 
 /**
  * Before printing the messages on screen, checks if either:
@@ -27,10 +59,7 @@ int	check_anyone_dead(int status, t_philo *philo)
 	int	ret;
 
 	if (philo->rules->died == 1)
-	{
-		pthread_mutex_unlock(&(philo->rules->write_lock));
 		ret = 1;
-	}
 	else if (status == DIED)
 	{
 		philo->rules->died = 1;
@@ -52,36 +81,28 @@ int	print_message(int status, t_philo *philo)
 	time_t	time;
 
 	pthread_mutex_lock(&(philo->rules->write_lock));
-	if (check_anyone_dead(status, philo))
+	if (check_anyone_dead(status, philo) || check_everyone_full(status, philo))
+	{
+		unlock_thread(philo);
 		return (1);
+	}
 	time = get_time() - philo->starting_time;
 	if (status == THINK)
-		printf(C_GRN "%ld %d is thinking\n", time, philo->id);
+		printf(C_GRN "%-8ld %d is thinking\n", time, philo->id);
 	else if (status == FORK)
-		printf(C_CYN "%ld %d has taken a fork\n", time, philo->id);
+		printf(C_CYN "%-8ld %d has taken a fork\n", time, philo->id);
 	else if (status == EAT)
-		printf(C_BLU "%ld %d is eating\n", time, philo->id);
+		printf(C_BLU "%-8ld %d is eating\n", time, philo->id);
 	else if (status == SLEEP)
-		printf("%ld %d is sleeping\n", time, philo->id);
+		printf(C_WHT "%-8ld %d is sleeping\n", time, philo->id);
 	else if (status == DIED)
-		printf(C_RED "%ld %d has died!\n", time, philo->id);
+		printf(C_RED "%-8ld %d died\n", time, philo->id);
 	else if (status == FULL)
-		printf(C_PUR "%ld All philos fed!\n", time);
+		printf(C_PUR "%-8ld All philos fed!\n", time);
+	else if (status == 0)
+		;
 	pthread_mutex_unlock(&(philo->rules->write_lock));
 	return (0);
-}
-
-/**
- * returns time (in milliseconds) since the start of the UNIX epoch on midnight
- * UTC January 1, 1970, and tv_usec is additional number (in microseconds)
- * elapsed from tv_sec (in seconds).
-*/
-time_t	get_time(void)
-{
-	struct timeval	time;
-
-	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
 /**
