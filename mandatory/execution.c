@@ -6,35 +6,88 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 20:10:25 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/30 19:20:40 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/07 14:50:57 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*philo_action(t_philo *philo)
+int	check_is_dead(t_philo *philo)
 {
-	philo->meal_history = get_time();
-	while (1)
-	{
-		if (thinking(philo) || eating(philo) || sleeping(philo))
-			break ;
-	}
+	int	ret;
+
+	pthread_mutex_lock(&(philo->cycle_protect));
+	if (get_time() - philo->starting_time - philo->meal_history
+		> philo->t_die)
+		ret = 1;
+	else
+		ret = 0;
+	pthread_mutex_unlock(&(philo->cycle_protect));
+	return (ret);
 }
 
-pthread_t	*execute(t_main *global, void *(fn)(void *))
+void	*death_timer(void *argument)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)(argument);
+	while (1)
+	{
+		if (check_is_dead(philo))
+		{
+			print_message(DIED, philo);
+			break ;
+		}
+	}
+	return (0);
+}
+
+void	*philo_cycle(void *argument)
+{
+	t_philo *philo;
+
+	philo = (t_philo *)(argument);
+	while (1)
+	{
+		if (thinking(philo))
+			break ;
+		if (eating(philo))
+			break ;
+		if (sleeping(philo))
+			break ;
+	}
+	return (0);
+}
+
+pthread_t	*execute(t_philo *philo, void *(fn)(void *))
 {
 	int			i;
 	pthread_t	*thread;
 
-	thread = malloc(sizeof(pthread_t) * global->ph_count);
+	thread = malloc(sizeof(pthread_t) * philo[0].ph_count);
 	i = -1;
-	while (++i < global->ph_count)
-		pthread_create(&(thread[i]), NULL, fn, (void *)(&(global->philo[i])));
+	while (++i < philo[0].ph_count)
+		pthread_create(&(thread[i]), NULL, fn, (void *)(&(philo[i])));
 	return(thread);
 }
 
-//  ____  _   _  ____  __    _____  ___  _____  ____  _   _  ____  ____  ___ 
-// (  _ \( )_( )(_  _)(  )  (  _  )/ __)(  _  )(  _ \( )_( )( ___)(  _ \/ __)
-//  )___/ ) _ (  _)(_  )(__  )(_)( \__ \ )(_)(  )___/ ) _ (  )__)  )   /\__ \
-// (__)  (_) (_)(____)(____)(_____)(___/(_____)(__)  (_) (_)(____)(_)\_)(___/
+/**
+ * Function to terminate threads
+ * 
+ * @param cycle the main threads responsible for monitoring eat/sleep/think
+ * @param death the death threads responsible for monitoring philos death
+ * @param ph_count total number of philosophers
+*/
+void	join_thread(pthread_t *cycle, pthread_t *death, int ph_count)
+{
+	int	i;
+
+	i = -1;
+	while (++i < ph_count)
+	{
+		pthread_join(cycle[i], NULL);
+		pthread_join(death[i], NULL);
+	}
+	free(cycle);
+	free(death);
+}

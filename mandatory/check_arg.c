@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 19:19:47 by chenlee           #+#    #+#             */
-/*   Updated: 2023/01/30 19:02:42 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/04 17:12:44 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	error(int condition)
 			" <time_to_sleep> <(optional)num_of_times_each_philo_must_eat>\n");
 	}
 	else if (condition == 2)
-		printf("Error: Parameters must contain only numbers!\n");
+		printf("Error: Parameters must contain only integers!\n");
 	else if (condition == 3)
 		printf("Error: Too many Philosophers!\n");
 	else if (condition == 4)
@@ -54,7 +54,7 @@ void	check_arguments(int argc, char **argv)
 		if (ft_atoi(argv[1]) > 200)
 			error(3);
 		if (ft_atoi(argv[1]) < 0 || ft_atoi(argv[2]) < 0 || ft_atoi(argv[3]) < 0
-			|| ft_atoi(argv[4]) < 0 || (argc == 6 && argv[5]) < 0)
+			|| ft_atoi(argv[4]) < 0 || (argc == 6 && ft_atoi(argv[5]) < 0))
 			error(4);
 	}
 }
