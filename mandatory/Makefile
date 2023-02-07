@@ -19,10 +19,10 @@ $(NAME):		$(OBJS)
 $(OBJS_DIR)%.o:	%.c
 			mkdir -p $(OBJS_DIR)
 			@echo "Compiling: $<"
-			gcc $(FLAGS) -fsanitize=thread -g3 -c $< -o $@
+			gcc $(FLAGS) -g3 -c $< -o $@
 
 philo:			$(NAME) main.c
-			gcc $(FLAGS) -fsanitize=thread -g3 main.c -L. -lphilo -o philo
+			gcc $(FLAGS) -g3 main.c -L. -lphilo -o philo
 			@echo " ---------------------------- "
 			@echo "|    Mandatory Philo Done    |"
 			@echo " ---------------------------- "
