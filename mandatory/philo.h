@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 18:42:18 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/07 19:17:22 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/08 15:58:33 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ typedef struct s_philo
 	int				must_eat;
 	time_t			starting_time;
 	time_t			meal_history;
-	time_t			death_timer;
 	pthread_mutex_t	cycle_protect;
 	t_global		*rules;
 }				t_philo;
