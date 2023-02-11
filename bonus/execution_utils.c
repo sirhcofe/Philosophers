@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 18:43:22 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/09 20:38:42 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/11 16:32:53 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	thinking(t_philo *philo)
 {
 	print_message(THINK, philo);
 	sem_wait(philo->forks);
-	sem_wait(philo->forks);
 	print_message(FORK, philo);
+	sem_wait(philo->forks);
 	print_message(FORK, philo);
 }
 

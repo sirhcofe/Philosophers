@@ -6,11 +6,27 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 16:21:21 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/10 17:08:51 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/11 16:40:24 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+int	check_dead_when_thinking(t_philo *philo, time_t *ret_time)
+{
+	time_t	current_time;
+	time_t	buffer_time;
+
+	current_time = get_time() - philo->starting_time;
+	buffer_time = current_time - philo->meal_history;
+	if (buffer_time > philo->t_die)
+	{
+		*(ret_time) = philo->meal_history + philo->t_die;
+		return (DIED);
+	}
+	else
+		return (FORK);
+}
 
 int	print_message(int status, t_philo *philo)
 {
@@ -18,6 +34,8 @@ int	print_message(int status, t_philo *philo)
 
 	sem_wait(philo->write_lock);
 	time = get_time() - philo->starting_time;
+	if (status == FORK)
+		status = check_dead_when_thinking(philo, &time);
 	if (time <= 2 && time > 0)
 		time -= 1;
 	if (status == THINK)
@@ -32,6 +50,8 @@ int	print_message(int status, t_philo *philo)
 		printf(C_RED "%-8ld %d died\n", time, philo->id);
 	if (status != DIED)
 		sem_post(philo->write_lock);
+	else
+		sem_post(philo->end_signal);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: chenlee <chenlee@student.42kl.edu.my>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 17:53:00 by chenlee           #+#    #+#             */
-/*   Updated: 2023/02/10 12:41:07 by chenlee          ###   ########.fr       */
+/*   Updated: 2023/02/11 16:32:49 by chenlee          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	create_child_process(t_philo *philo)
 	philo->starting_time = get_time();
 	philo->meal_history = philo->starting_time;
 	if (philo->id % 2 == 0)
-		usleep(42);
+		usleep(1500);
 	while (1)
 	{
 		thinking(philo);
